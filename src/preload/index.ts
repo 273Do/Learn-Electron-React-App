@@ -1,16 +1,21 @@
 import { electronAPI } from '@electron-toolkit/preload'
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {}
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
+//`ContextBridge`APIを使用してelectron APIを公開
+//コンテキスト分離が有効になっている場合にのみレンダラー
+//DOMグローバルに追加してください。
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
+
+    // ダークモードの切り替えを行う関数
+    contextBridge.exposeInMainWorld('myAPI', {
+      toggleDarkmode: () => ipcRenderer.invoke('toggle-darkmode')
+    })
   } catch (error) {
     console.error(error)
   }

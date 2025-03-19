@@ -133,6 +133,14 @@ app.whenReady().then(() => {
   // アプリケーションメニューにカスタムメニューを適用
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
+
+  // テーマ設定
+  nativeTheme.themeSource = 'system'
+})
+
+// ダークモードの切り替えをするIPC通信
+ipcMain.handle('toggle-darkmode', () => {
+  nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? 'light' : 'dark'
 })
 
 // macOS以外のOSでは、すべてのウィンドウが閉じたらアプリを終了
