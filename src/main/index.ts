@@ -5,83 +5,83 @@ import { join } from 'path'
 import { menu } from './menu'
 import icon from '../../resources/icon.png?asset'
 
+/**
+ * メインウィンドウを作成する関数
+ */
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
-    show: false,
-    autoHideMenuBar: true,
+    show: false, // 初期表示時にウィンドウを非表示にする
+    autoHideMenuBar: true, // メニューバーを自動で非表示にする
     // transparent: true, // ウィンドウを透明にする
-    // frame: false, // フレームレスウィンドウ
+    // frame: false, // フレームレスウィンドウ（ウィンドウの枠をなくす）
     // titleBarStyle: 'hidden', // タイトルバーを非表示にする
     vibrancy: 'under-window', // macOSのウィンドウ全体に適用する
-    visualEffectState: 'active', // Vibrancyを常に適用
-    ...(process.platform === 'linux' ? { icon } : {}),
+    visualEffectState: 'active', // Vibrancy（背景のぼかし）を常に適用
+    ...(process.platform === 'linux' ? { icon } : {}), // Linux用のアイコンを設定
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      preload: join(__dirname, '../preload/index.js'), // プリロードスクリプトを指定
+      sandbox: false // サンドボックスを無効化
     }
   })
 
+  // ウィンドウが表示準備完了後に表示する
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
   })
 
-  // setVibrancy(背景不透明)適用
-  // if (process.platform === 'darwin') {
-  mainWindow.setVibrancy('sidebar') // サイドバー用のVibrancy
-  // mainWindow.setVibrancy('content') // コンテンツ用のVibrancy
-  // }
+  // macOS用のVibrancy（背景のぼかし）設定
+  mainWindow.setVibrancy('sidebar') // サイドバーのVibrancyを適用
+  // mainWindow.setVibrancy('content') // コンテンツ領域のVibrancyを適用
 
+  // 外部リンクを開く際の挙動を設定（新しいウィンドウを開かせずにブラウザで開く）
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
-    return { action: 'deny' }
+    return { action: 'deny' } // ウィンドウの作成を拒否
   })
 
+  // 開発モードでは、環境変数に設定されたURLをロード
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
+    // 本番モードでは、ローカルのHTMLファイルをロード
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+// Electron の初期化が完了した際の処理
 app.whenReady().then(() => {
-  // Set app user model id for windows
+  // Windows用のアプリケーションモデルIDを設定
   electronApp.setAppUserModelId('com.electron')
 
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
+  // 開発時にF12でDevToolsを開閉できるようにし、本番環境ではCommandOrControl + Rを無効化
+  // 詳細: https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
+  // IPC通信のテスト（フロントエンドから "ping" が送信されたら "pong" を出力）
   ipcMain.on('ping', () => console.log('pong'))
 
+  // メインウィンドウを作成
   createWindow()
 
+  // macOSでは、ウィンドウが全て閉じてもアプリケーションを終了しない（Cmd + Q で終了）
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
-  // アプリケーションメニューへ "menu" を適用する
+  // アプリケーションメニューにカスタムメニューを適用
   Menu.setApplicationMenu(menu)
 })
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+// macOS以外のOSでは、すべてのウィンドウが閉じたらアプリを終了
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+// ここにアプリのメインプロセスの処理を追加可能
+// 必要に応じて他のファイルから処理を読み込むことも可能
