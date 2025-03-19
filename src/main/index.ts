@@ -28,7 +28,8 @@ function createWindow(): void {
 
   // setVibrancy(背景不透明)適用
   // if (process.platform === 'darwin') {
-  mainWindow.setVibrancy('sidebar')
+  mainWindow.setVibrancy('sidebar') // サイドバー用のVibrancy
+  // mainWindow.setVibrancy('content') // コンテンツ用のVibrancy
   // }
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
