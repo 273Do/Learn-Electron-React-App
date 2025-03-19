@@ -1,8 +1,15 @@
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import { app, shell, BrowserWindow, ipcMain, Menu } from 'electron'
+import {
+  app,
+  shell,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  MenuItemConstructorOptions,
+  nativeTheme
+} from 'electron'
 import { join } from 'path'
 
-import { menu } from './menu'
 import icon from '../../resources/icon.png?asset'
 
 /**
@@ -72,7 +79,49 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 
+  // ポップアップメニューを作成
+  // const menu = Menu.buildFromTemplate([
+  //   {
+  //     label: 'File',
+  //     submenu: [
+  //       {
+  //         label: 'Close',
+  //         accelerator: 'CmdOrCtrl+W',
+  //         role: 'close'
+  //       }
+  //     ]
+  //   },
+  //   {
+  //     label: 'Help',
+  //     submenu: [
+  //       {
+  //         label: 'Console Log',
+  //         click: () => console.log('context-menu')
+  //       }
+  //     ]
+  //   }
+  // ])
+
+  const template: MenuItemConstructorOptions[] = [
+    {
+      label: 'Window',
+      submenu: [
+        {
+          label: 'Toggle Darkmode',
+          accelerator: 'Ctrl+Shift+D',
+          type: 'checkbox',
+          id: 'darkmode',
+          checked: nativeTheme.shouldUseDarkColors,
+          click: () => {
+            nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? 'light' : 'dark'
+          }
+        }
+      ]
+    }
+  ]
+
   // アプリケーションメニューにカスタムメニューを適用
+  const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 })
 
