@@ -112,6 +112,7 @@ app.whenReady().then(() => {
           type: 'checkbox',
           id: 'darkmode',
           checked: nativeTheme.shouldUseDarkColors,
+          // ダークモードへの切り替え
           click: () => {
             nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? 'light' : 'dark'
           }
@@ -119,7 +120,7 @@ app.whenReady().then(() => {
       ]
     },
     {
-      label: 'wow',
+      label: 'Help',
       submenu: [
         {
           label: 'Console Log',
