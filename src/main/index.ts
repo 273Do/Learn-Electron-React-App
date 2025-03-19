@@ -117,6 +117,15 @@ app.whenReady().then(() => {
           }
         }
       ]
+    },
+    {
+      label: 'wow',
+      submenu: [
+        {
+          label: 'Console Log',
+          click: () => console.log('context-menu')
+        }
+      ]
     }
   ]
 
