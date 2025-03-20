@@ -13,8 +13,9 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', api)
 
     // ダークモードの切り替えを行う関数
-    contextBridge.exposeInMainWorld('myAPI', {
-      toggleDarkmode: () => ipcRenderer.invoke('toggle-darkmode')
+    contextBridge.exposeInMainWorld('setTheme', {
+      toggleDarkmode: () => ipcRenderer.invoke('toggle-darkmode'),
+      setSystemTheme: () => ipcRenderer.invoke('set-system-theme')
     })
   } catch (error) {
     console.error(error)

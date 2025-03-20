@@ -22,7 +22,7 @@ function createWindow(): void {
     show: false, // 初期表示時にウィンドウを非表示にする
     autoHideMenuBar: true, // メニューバーを自動で非表示にする
     // transparent: true, // ウィンドウを透明にする
-    // frame: false, // フレームレスウィンドウ（ウィンドウの枠をなくす）
+    frame: false, // フレームレスウィンドウ（ウィンドウの枠をなくす）
     // titleBarStyle: 'hidden', // タイトルバーを非表示にする
     vibrancy: 'under-window', // macOSのウィンドウ全体に適用する
     visualEffectState: 'active', // Vibrancy（背景のぼかし）を常に適用
@@ -141,6 +141,11 @@ app.whenReady().then(() => {
 // ダークモードの切り替えをするIPC通信
 ipcMain.handle('toggle-darkmode', () => {
   nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? 'light' : 'dark'
+})
+
+// システムテーマを適用するIPC通信
+ipcMain.handle('set-system-theme', () => {
+  nativeTheme.themeSource = 'system'
 })
 
 // macOS以外のOSでは、すべてのウィンドウが閉じたらアプリを終了

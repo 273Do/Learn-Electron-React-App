@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.draggable {
+  /* ドラッグ可能なゾーンとする */
+  -webkit-app-region: drag;
+}
+
 /* body {
   display: flex;
   align-items: center;
