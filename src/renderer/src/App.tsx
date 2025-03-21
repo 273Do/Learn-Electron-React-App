@@ -1,3 +1,12 @@
+declare global {
+  interface Window {
+    setTheme: {
+      toggleDarkmode: () => void
+      setSystemTheme: () => void
+    }
+  }
+}
+
 function App(): JSX.Element {
   const handleClick = () => {
     // nativeTheme.themeSource = nativeTheme.shouldUseDarkColors ? 'light' : 'dark'
